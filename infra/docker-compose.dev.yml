@@ -1,0 +1,26 @@
+services:
+  backend:
+    build: ./backend
+    container_name: fitlab-backend
+    env_file:
+      - .env
+    environment:
+      - PORT=${BACKEND_PORT}
+    networks:
+      - fitlab-net
+
+  proxy:
+    build: ./proxy
+    container_name: fitlab-proxy
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ../build/web:/usr/share/nginx/html:ro
+    networks:
+      - fitlab-net
+
+networks:
+  fitlab-net:
+    driver: bridge
